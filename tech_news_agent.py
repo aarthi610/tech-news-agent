@@ -508,7 +508,7 @@ TOOLS = [
 def build_agent() -> AgentExecutor:
     llm = ChatGroq(
         api_key=GROQ_API_KEY,
-        model="llama-3.3-70b-versatile",
+        model="llama-3.1-8b-instant",
         temperature=0.4,
         max_retries=2,
     )
@@ -557,16 +557,6 @@ def run_news_agent():
 # ─────────────────────────────────────────────
 
 if __name__ == "__main__":
-    logger.info("Scheduling Tech News Agent: morning at %s, evening at %s",
-                SCHEDULE_MORNING, SCHEDULE_EVENING)
-
-    schedule.every().day.at(SCHEDULE_MORNING).do(run_news_agent)
-    schedule.every().day.at(SCHEDULE_EVENING).do(run_news_agent)
-
     logger.info("Running once immediately for testing...")
-    run_news_agent()
 
-    logger.info("Scheduler is live. Waiting for next run...")
-    while True:
-        schedule.run_pending()
-        time.sleep(30)
+    run_news_agent()
