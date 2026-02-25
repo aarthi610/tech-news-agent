@@ -179,7 +179,8 @@ EMAIL_PASSWORD  = os.getenv("EMAIL_PASSWORD")
 EMAIL_RECIPIENT = os.getenv("EMAIL_RECIPIENT")
 SMTP_HOST       = "smtp.gmail.com"
 SMTP_PORT       = 465
-SCHEDULE_TIME   = "09:00"
+SCHEDULE_MORNING = "09:00"
+SCHEDULE_EVENING = "19:00"
 
 RSS_FEEDS = {
     "TechCrunch":   "https://techcrunch.com/feed/",
@@ -391,7 +392,8 @@ def send_email_digest(html_content: str) -> str:
 
     try:
         today   = datetime.now().strftime("%B %d, %Y")
-        subject = "Daily Tech Digest - " + today
+        edition = "Morning Edition" if datetime.now().hour < 12 else "Evening Edition"
+        subject = "Tech Digest ({}) - {}".format(edition, today)
 
         msg            = MIMEMultipart("alternative")
         msg["Subject"] = subject
@@ -402,7 +404,7 @@ def send_email_digest(html_content: str) -> str:
             "<div style='border-bottom:3px solid #1a73e8;"
             "padding-bottom:15px;margin-bottom:30px;'>"
             "<h1 style='color:#1a73e8;font-size:28px;margin:0;'>"
-            "Daily Tech Digest</h1>"
+            "Tech Digest &mdash; " + edition + "</h1>"
             "<p style='color:#999;font-size:13px;margin:6px 0 0;'>"
             + today + " - Curated by AI (LangChain + Groq)</p></div>"
         )
@@ -555,5 +557,16 @@ def run_news_agent():
 # ─────────────────────────────────────────────
 
 if __name__ == "__main__":
+    logger.info("Scheduling Tech News Agent: morning at %s, evening at %s",
+                SCHEDULE_MORNING, SCHEDULE_EVENING)
+
+    schedule.every().day.at(SCHEDULE_MORNING).do(run_news_agent)
+    schedule.every().day.at(SCHEDULE_EVENING).do(run_news_agent)
+
     logger.info("Running once immediately for testing...")
     run_news_agent()
+
+    logger.info("Scheduler is live. Waiting for next run...")
+    while True:
+        schedule.run_pending()
+        time.sleep(30)
