@@ -2,8 +2,7 @@ name: Daily Tech News Email
 
 on:
   schedule:
-    - cron: '30 3 * * *'    # 9:00 AM IST  (UTC+5:30)
-    - cron: '30 13 * * *'   # 7:00 PM IST  (UTC+5:30)
+    - cron: '30 3 * * *'   # 9:00 AM IST
   workflow_dispatch:
 
 jobs:
@@ -22,12 +21,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-
       - name: Run Script
         env:
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
         run: |
           python tech_news_agent.py

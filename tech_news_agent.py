@@ -504,13 +504,13 @@ TOOLS = [
     send_email_digest,
 ]
 
-
 def build_agent() -> AgentExecutor:
     llm = ChatGroq(
         api_key=GROQ_API_KEY,
-        model="llama-3.1-8b-instant",
+        model="llama-3.3-70b-versatile",
         temperature=0.4,
         max_retries=2,
+        streaming=False
     )
 
     # Only {today} and {agent_scratchpad} are template variables
