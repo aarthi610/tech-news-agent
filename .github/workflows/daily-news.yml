@@ -1,30 +1,45 @@
-name: Daily Tech News Email
+name: Tech News Agent
 
 on:
   schedule:
-    - cron: '30 3 * * *'   # 9:00 AM IST
-  workflow_dispatch:
+    - cron: "0 3 * * *"    # 09:00 IST  (UTC+5:30 → 03:30 UTC, rounded to 03:00)
+    - cron: "30 13 * * *"  # 19:00 IST  (UTC+5:30 → 13:30 UTC)
+  workflow_dispatch:         # allow manual runs from the Actions tab
 
 jobs:
-  run-script:
+  run-agent:
+    name: Run Tech News Agent
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      GROQ_API_KEY:      ${{ secrets.GROQ_API_KEY }}
+      EMAIL_SENDER:      ${{ secrets.EMAIL_SENDER }}
+      EMAIL_PASSWORD:    ${{ secrets.EMAIL_PASSWORD }}
+      EMAIL_RECIPIENT:   ${{ secrets.EMAIL_RECIPIENT }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.11"
+          cache: pip
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-      - name: Run Script
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: |
-          python tech_news_agent.py
+          pip install --upgrade pip
+          pip install \
+            langchain \
+            langchain-core \
+            langchain-groq \
+            langchain-community \
+            feedparser \
+            requests \
+            schedule \
+            python-dotenv
+
+      - name: Run Tech News Agent
+        run: python tech_news_agent.py
