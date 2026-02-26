@@ -1,4 +1,4 @@
-name: Tech News Agent
+name: Daily Tech News Email
 
 on:
   schedule:
@@ -32,10 +32,10 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install \
-            langchain \
-            langchain-core \
-            langchain-groq \
-            langchain-community \
+            "langchain==0.2.17" \
+            "langchain-core==0.2.43" \
+            "langchain-groq==0.1.9" \
+            "langchain-community==0.2.19" \
             feedparser \
             requests \
             schedule \
