@@ -2,8 +2,8 @@ name: Daily Tech News Email
 
 on:
   schedule:
-    - cron: "0 3 * * *"    # 09:00 IST  (UTC+5:30 → 03:30 UTC, rounded to 03:00)
-    - cron: "30 13 * * *"  # 19:00 IST  (UTC+5:30 → 13:30 UTC)
+    - cron: "30 3 * * *"   # 09:00 AM IST
+    - cron: "30 13 * * *"  # 07:00 PM IST
   workflow_dispatch:         # allow manual runs from the Actions tab
 
 jobs:
